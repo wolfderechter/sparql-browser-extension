@@ -37,8 +37,8 @@ function SbFiles() {
     db.files.add({
       name: name,
       code: `SELECT * WHERE {
-  ?s ?p ?o 
-} LIMIT 10`,
+  ?s ?p ?o
+} LIMIT 100`,
       focused: 1,
       favorite: 0,
       created: now,
@@ -83,7 +83,7 @@ function SbFiles() {
         </button>
       </div>
 
-      <div className='p-2 space-y-px h-[450px] overflow-auto'>
+      <div className='p-2 space-y-px h-[780px] overflow-auto'>
         {isCreating && (
           <div
             ref={fileInput}

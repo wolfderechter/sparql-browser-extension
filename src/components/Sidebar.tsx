@@ -1,7 +1,6 @@
 import React from "react"
 import SbFiles from "./Sidebar/SbFiles"
 import SbDatabases from "./Sidebar/SbDatabases"
-import SbFavorites from "./Sidebar/SbFavorites"
 import { db } from "../data/db";
 import { importDB, exportDB } from "dexie-export-import";
 
@@ -43,7 +42,6 @@ function Sidebar() {
     <div className="flex h-full w-60 flex-col border-r border-gray-300 bg-gray-100 text-gray-800">
       <SbDatabases />
       <SbFiles />
-      <SbFavorites />
       <div className="flex-1" />
       <div className="flex w-[80%] justify-around">
         <a
