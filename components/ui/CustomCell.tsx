@@ -14,7 +14,7 @@ function CustomCell({ value }) {
   return (
     <div
       onDoubleClick={() => setToggle(!isToggled)}
-      className={isToggled && "font-medium"}>
+      className={isToggled ? "font-medium" : ""}>
       {isToggled ? value.shortened : value.uri}
     </div>
   );
