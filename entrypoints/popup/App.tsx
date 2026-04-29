@@ -1,35 +1,25 @@
-import { useState } from 'react';
-import reactLogo from '@/assets/react.svg';
-import wxtLogo from '/wxt.svg';
-import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const createTab = () => {
+    browser.tabs.create({
+      // url: browser.runtime.getURL('tab/index.html')
+    });
+  };
   return (
-    <>
-      <div>
-        <a href="https://wxt.dev" target="_blank">
-          <img src={wxtLogo} className="logo" alt="WXT logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="w-64 bg-blue-600 p-4 shadow-md">
+      <div className="mb-4 flex items-center space-x-2">
+        <i className="ri-bubble-chart-fill text-2xl text-white" />
+        <h1 className="font-medium text-white">Sparql Browser Extension</h1>
       </div>
-      <h1>WXT + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div className="w-full">
+        <button
+          onClick={createTab}
+          className="w-full rounded-lg bg-white p-2 text-center font-medium text-blue-600 transition duration-200 hover:bg-gray-200">
+          Open Editor
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the WXT and React logos to learn more
-      </p>
-    </>
+    </div>
   );
-}
+};
 
 export default App;
