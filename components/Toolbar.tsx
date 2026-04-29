@@ -27,7 +27,7 @@ function Toolbar() {
       status: "",
       statusMessage: "",
       errorMessage: "",
-      duration: 0
+      duration: ""
     });
 
     try {
@@ -45,6 +45,7 @@ function Toolbar() {
 
       const end = performance.now();
       const duration = formatDuration(end - start);
+      console.log(duration);
 
       if (!res.ok) {
         const errorMessage = await res.text();
@@ -53,7 +54,7 @@ function Toolbar() {
           statusMessage: res.statusText,
           errorMessage: errorMessage,
           isLoading: false,
-          duration: parseInt(duration)
+          duration: duration
         });
         return;
       }
@@ -64,7 +65,7 @@ function Toolbar() {
         statusMessage: res.statusText,
         output: output,
         isLoading: false,
-        duration: parseInt(duration)
+        duration: duration
       });
     } catch (err: any) {
       await db.files.update(file, {

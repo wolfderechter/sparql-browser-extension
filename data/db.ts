@@ -21,7 +21,7 @@ export interface FileRecord {
   statusMessage: string;
   errorMessage: string;
   isLoading: boolean;
-  duration: number;
+  duration: string;
 }
 
 export interface FileListItemProps {

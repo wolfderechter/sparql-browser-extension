@@ -50,7 +50,7 @@ function SbFiles() {
       statusMessage: "",
       errorMessage: "",
       isLoading: false,
-      duration: 0
+      duration: ""
     });
   }
 
