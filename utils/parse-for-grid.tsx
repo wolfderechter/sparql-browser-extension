@@ -2,11 +2,11 @@ import CustomCell from "@/components/ui/CustomCell";
 import { prefixes } from "@/data/prefixes";
 
 const sortedPrefixes = Object.entries(prefixes).sort(
-  (a, b) => b[0].length - a[0].length
+  (a, b) => b[1].length - a[1].length
 );
 
-function findShortened(value) {
-  for (const [long, short] of sortedPrefixes) {
+function findShortened(value: any) {
+  for (const [short, long] of sortedPrefixes) {
     if (value.startsWith(long)) {
       return value.replace(long, `${short}:`);
     }
@@ -14,7 +14,7 @@ function findShortened(value) {
   return null;
 }
 
-export function parseForGrid(data) {
+export function parseForGrid(data: any) {
   if (!data) {
     return { columns: [], rows: [] };
   }
@@ -31,7 +31,7 @@ export function parseForGrid(data) {
       pinned: "left",
       width: "60px"
     },
-    ...data.head.vars.map((variable) => ({
+    ...data.head.vars.map((variable: any) => ({
       field: variable,
       resizable: true,
       sortable: true,
@@ -40,7 +40,7 @@ export function parseForGrid(data) {
   ];
 
   const bindings = data.results?.bindings || [];
-  const rows = bindings.slice(0, 500).map((row, index) => {
+  const rows = bindings.slice(0, 500).map((row: any, index: number) => {
     const newRow = { ID: index + 1 };
 
     for (const [key, valueObj] of Object.entries(row)) {
