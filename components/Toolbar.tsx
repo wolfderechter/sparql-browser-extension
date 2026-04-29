@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { db } from "../data/db";
+import { useState } from "react";
+import { db, EndpointRecord } from "@/data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import Select from "react-select";
-import { formatDuration } from "../utils/formatDuration";
+import { formatDuration } from "@/utils/formatDuration";
 
 function Toolbar() {
   const [editingEndpoint, setEditingEndpoint] = useState(false);
@@ -24,14 +24,15 @@ function Toolbar() {
 
     await db.files.update(file, {
       isLoading: true,
-      status: null,
-      statusMessage: null,
-      errorMessage: null,
-      output: null,
-      duration: null
+      status: "",
+      statusMessage: "",
+      errorMessage: "",
+      duration: 0
     });
 
     try {
+      if (!file) return;
+
       const start = performance.now();
       const res = await fetch(endpoint, {
         method: "POST",
@@ -48,24 +49,24 @@ function Toolbar() {
       if (!res.ok) {
         const errorMessage = await res.text();
         await db.files.update(file, {
-          status: res.status,
+          status: res.status.toString(),
           statusMessage: res.statusText,
           errorMessage: errorMessage,
           isLoading: false,
-          duration: duration
+          duration: parseInt(duration)
         });
         return;
       }
 
       const output = await res.json();
       await db.files.update(file, {
-        status: res.status,
+        status: res.status.toString(),
         statusMessage: res.statusText,
         output: output,
         isLoading: false,
-        duration: duration
+        duration: parseInt(duration)
       });
-    } catch (err) {
+    } catch (err: any) {
       await db.files.update(file, {
         errorMessage: err.stack,
         statusMessage: err.message,
@@ -74,19 +75,7 @@ function Toolbar() {
     }
   }
 
-  function isFavorite() {
-    return file.favorite === 1
-      ? "ri-star-fill text-yellow-400"
-      : "ri-star-line text-gray-400";
-  }
-
-  function toggleFavorite() {
-    db.files.update(file, {
-      favorite: file.favorite === 1 ? 0 : 1
-    });
-  }
-
-  function setEndpoint(endpoint) {
+  function setEndpoint(endpoint: EndpointRecord) {
     db.endpoints.where("focused").equals(1).modify({ focused: 0 });
     db.endpoints.update(endpoint.id, { focused: 1 });
   }
@@ -97,11 +86,6 @@ function Toolbar() {
     <div className="flex w-full items-center justify-between p-4">
       <div className="flex-1 space-y-2">
         <div className="flex items-center space-x-2">
-          <button
-            className="rounded bg-gray-100 px-2 py-1 hover:bg-yellow-100"
-            onClick={toggleFavorite}>
-            <i className={`text-xl ${isFavorite()}`}></i>
-          </button>
           <span className="text-xl font-medium">{file.name}</span>
         </div>
       </div>
@@ -143,12 +127,18 @@ function Toolbar() {
   );
 }
 
-function EndpointModal({ setEditingEndpoint, endpoints }) {
+function EndpointModal({ setEditingEndpoint, endpoints }: any, EndpointRecord:[]) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
 
   function createEndpoint() {
-    db.endpoints.add({ label, value });
+    if (!label.trim() || !value.trim()) return;
+    const endpoint = {
+      label: label.trim(),
+      value: value.trim(),
+      focused: 1,
+    }
+    db.endpoints.add(endpoint);
     setLabel("");
     setValue("");
   }
@@ -208,7 +198,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }) {
                         </span>
                       </td>
                     </tr>
-                    {endpoints.map((endpoint, index) => (
+                    {endpoints.map((endpoint: EndpointRecord, index: number) => (
                       <tr key={index} className="text-gray-700">
                         <td className="whitespace-nowrap px-4 py-2">
                           {endpoint.label}
@@ -232,7 +222,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }) {
                     <input
                       id="small_outlined"
                       type="text"
-                      className="border-1 peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
+                      className="border peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
                       placeholder=" "
                       value={label}
                       onChange={(e) => setLabel(e.target.value)}
@@ -247,20 +237,20 @@ function EndpointModal({ setEditingEndpoint, endpoints }) {
                     <input
                       id="small_outlined"
                       type="text"
-                      className="border-1 peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
+                      className="border peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
                       placeholder=" "
                       value={value}
                       onChange={(e) => setValue(e.target.value)}
                     />
                     <label
                       htmlFor="small_outlined"
-                      className="absolute left-1 top-1 z-10 origin-[0] -translate-y-3 scale-75 transform bg-white px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600">
+                      className="absolute left-1 top-1 z-10 origin-left -translate-y-3 scale-75 transform bg-white px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600">
                       Value
                     </label>
                   </div>
                   <button
                     onClick={createEndpoint}
-                    className="border-1 flex items-center rounded border-blue-600 bg-blue-600 px-2 py-1 leading-none text-white hover:bg-blue-700">
+                    className="border flex items-center rounded border-blue-600 bg-blue-600 px-2 py-1 leading-none text-white hover:bg-blue-700 cursor-pointer">
                     <i className="ri-add-line text-base"></i>
                   </button>
                 </div>

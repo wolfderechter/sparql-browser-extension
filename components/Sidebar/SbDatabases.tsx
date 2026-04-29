@@ -1,18 +1,18 @@
-import React, { useRef, useState } from "react";
-import useOnClickOutside from "../../hooks/useOnClickOutside";
-import { db } from "../../data/db";
+import { RefObject, useRef, useState } from "react";
+import { useOnClickOutside } from 'usehooks-ts'
+import { DatabaseRecord, db } from "@/data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
 function SbDatabases() {
-  const dbInput = useRef();
+  const dbInput = useRef<HTMLDivElement>(null);
 
-  const [selectedDb, setSelectedDb] = useState(false);
+  const [selectedDb, setSelectedDb] = useState<DatabaseRecord | null>(null);
   const [isCreatingDb, setIsCreatingDb] = useState(false);
   const [dbName, setDbName] = useState("");
 
   const databases = useLiveQuery(() => db.databases.toArray());
 
-  useOnClickOutside(dbInput, () => {
+  useOnClickOutside(dbInput as RefObject<HTMLElement>, () => {
     setIsCreatingDb(false);
   });
 
@@ -29,7 +29,7 @@ function SbDatabases() {
     });
   }
 
-  function setDatabase(database) {
+  function setDatabase(database: DatabaseRecord) {
     if (database.focused == 1) return;
 
     db.databases.where("focused").equals(1).modify({ focused: 0 });
@@ -39,12 +39,13 @@ function SbDatabases() {
   }
 
   async function deleteDatabase() {
+    if (!selectedDb?.id) return;
     await db.files.where({ databaseId: selectedDb.id }).delete();
     await db.databases.where({ id: selectedDb.id }).delete();
-    setSelectedDb(false);
+    setSelectedDb(null);
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: { key: string; }) => {
     if (event.key === "Escape") {
       setIsCreatingDb(false);
       setDbName("");
@@ -67,7 +68,7 @@ function SbDatabases() {
           Collections
         </h2>
         <button
-          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300"
+          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300 cursor-pointer"
           onClick={() => setIsCreatingDb(true)}>
           <i className="ri-add-line text-sm"></i>
         </button>
@@ -120,18 +121,18 @@ function SbDatabases() {
 
       {selectedDb && (
         <div className="relative z-50" role="dialog" aria-modal="true">
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+          <div className="fixed inset-0 bg-gray-800/50 transition-all"></div>
 
           <div
             className="fixed inset-0 overflow-y-auto"
-            onClick={() => setSelectedDb(false)}>
+            onClick={() => setSelectedDb(null)}>
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div
                   className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4"
                   onClick={(e) => e.stopPropagation()}>
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                       <svg
                         className="h-6 w-6 text-red-600"
                         xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +174,7 @@ function SbDatabases() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setSelectedDb(false)}
+                    onClick={() => setSelectedDb(null)}
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm">
                     Cancel
                   </button>

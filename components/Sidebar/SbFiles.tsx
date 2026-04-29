@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "~data/db";
-import useOnClickOutside from "~hooks/useOnClickOutside";
+import { FileListItemProps, db } from "@/data/db";
+import { useOnClickOutside } from 'usehooks-ts'
 
 function SbFiles() {
-  const fileInput = useRef();
+  const fileInput = useRef<HTMLDivElement>(null);
 
   const [isCreating, setIsCreating] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -17,13 +17,15 @@ function SbFiles() {
     [database]
   );
 
-  useOnClickOutside(fileInput, () => {
+  useOnClickOutside(fileInput as RefObject<HTMLElement>, () => {
     setIsCreating(false);
   });
 
   if (!database) return null;
 
   async function addFile() {
+    if (!database?.id) return; // guard inside the async fn
+
     const now = new Date();
 
     const humanDate = now.toLocaleString("en-GB", {
@@ -40,22 +42,19 @@ function SbFiles() {
   ?s ?p ?o
 } LIMIT 100`,
       focused: 1,
-      favorite: 0,
       created: now,
       databaseId: database.id,
-      modified: now
+      modified: now,
+      output: "",
+      status: "",
+      statusMessage: "",
+      errorMessage: "",
+      isLoading: false,
+      duration: 0
     });
   }
 
-  function isFocused(value) {
-    if (value) {
-      return "bg-blue-200 text-black";
-    } else {
-      return "hover:bg-gray-100";
-    }
-  }
-
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: { key: string; }) => {
     if (event.key === "Escape") {
       setIsCreating(false);
       setFileName("");
@@ -70,20 +69,21 @@ function SbFiles() {
   const isEmptyAndNotCreating = () => files?.length == 0 && isCreating == false;
 
   return (
-    <div className="border-t border-gray-300">
+    // TODO: fix height, auto size instead of fixed value
+    <div className="border-t border-gray-300  h-[68%]">
       <div className="flex items-center justify-between space-x-1 bg-gray-200/50 py-2 pl-2 pr-3">
         <i className="ri-bubble-chart-line text-base text-gray-500"></i>
         <h2 className="flex-1 text-xs font-medium uppercase text-gray-900">
           Queries
         </h2>
         <button
-          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300"
+          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300 cursor-pointer"
           onClick={() => setIsCreating(true)}>
           <i className="ri-add-line text-sm"></i>
         </button>
       </div>
 
-      <div className='p-2 space-y-px h-[780px] overflow-auto'>
+      <div className='p-2 space-y-px overflow-auto h-full'>
         {isCreating && (
           <div
             ref={fileInput}
@@ -100,8 +100,8 @@ function SbFiles() {
             />
           </div>
         )}
-        {files?.map((file, index) => (
-          <FileListItem key={file.id} file={file} />
+        {files?.map((file) => (
+          <FileListItem key={file.id ?? file.created.getTime()} file={file} />
         ))}
 
         {isEmptyAndNotCreating() && (
@@ -114,27 +114,29 @@ function SbFiles() {
   );
 }
 
-function FileListItem({ file }) {
-  const fileInput = useRef();
+function FileListItem({ file }: FileListItemProps) {
+  const fileInput = useRef<HTMLDivElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [fileName, setFileName] = useState(file.name || "");
 
-  useOnClickOutside(fileInput, () => {
+  useOnClickOutside(fileInput as RefObject<HTMLElement>, () => {
     setIsEditing(false);
     setFileName(file.name);
   });
 
-  function deleteFile(fileId) {
+  function deleteFile(fileId: number | undefined) {
+    if (fileId === undefined) return;
     db.files.delete(fileId);
   }
 
-  function setFile(fileId) {
+  function setFile(fileId: number | undefined) {
+    if (fileId === undefined) return;
     db.files.where("focused").equals(1).modify({ focused: 0 });
     db.files.update(fileId, { focused: 1 });
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: { key: string; }) => {
     if (event.key === "Escape") {
       setIsEditing(false);
       setFileName(file.name);

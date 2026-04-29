@@ -2,7 +2,7 @@
 function App() {
   const createTab = () => {
     browser.tabs.create({
-      // url: browser.runtime.getURL('tab/index.html')
+      url: browser.runtime.getURL('/editor.html')
     });
   };
   return (

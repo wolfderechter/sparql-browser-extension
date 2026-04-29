@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@import "remixicon/fonts/remixicon.css";
+
+/* Optional: Fix icon alignment for React 19 */
+.ri-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}

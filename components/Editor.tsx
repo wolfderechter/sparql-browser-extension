@@ -1,17 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createSparqlEditor } from "sparql-editor";
-import { db } from "../data/db";
+import { db } from "@/data/db";
 import { useDebouncedCallback } from "use-debounce";
 import { useLiveQuery } from "dexie-react-hooks";
 
+// Define the type for the editor instance (adjust based on sparql-editor's actual return type)
+interface SparqlEditorView {
+  destroy: () => void;
+}
+
 function Editor() {
-  const container = useRef(null);
-  const [view, setView] = useState(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<SparqlEditorView | null>(null);
 
   const file = useLiveQuery(() => db.files.where({ focused: 1 }).first());
 
-  const debouncedUpdate = useDebouncedCallback((value) => {
-    if (file) {
+  const debouncedUpdate = useDebouncedCallback((value: string) => {
+    if (file?.id) {
       db.files.update(file.id, {
         code: value,
         modified: new Date()
@@ -20,41 +25,42 @@ function Editor() {
   }, 500);
 
   useEffect(() => {
-    if (file && !view) {
-      const viewCurrent = createSparqlEditor({
-        parent: container.current,
-        onChange: handleChange,
-        value: file.code
-      });
+    // Only initialize if we have a file and a container
+    if (!file || !containerRef.current) return;
 
-      setView(viewCurrent);
-    }
-  }, [file, view]);
+    // Create the editor
+    const view = createSparqlEditor({
+      parent: containerRef.current,
+      value: file.code,
+      onChange: (val: string) => debouncedUpdate(val),
+    });
 
-  useEffect(() => {
-    if (view) {
-      view.destroy();
-      setView(null);
-    }
-  }, [file?.id]);
+    editorRef.current = view;
 
-  function handleChange(value) {
-    debouncedUpdate(value);
-  }
+    // Cleanup function: This runs automatically when the file ID changes or component unmounts
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.destroy();
+        editorRef.current = null;
+      }
+    };
+  }, [file?.id]); // Re-run only when the actual file changes
 
   if (!file) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center text-gray-500">
-          <i className="ri-braces-line text-4xl"></i>
-          <div>Open a file to start writing your query</div>
+      <div className="flex h-full items-center justify-center bg-gray-50/50">
+        <div className="text-center text-gray-400">
+          <i className="ri-braces-line text-5xl mb-2 block"></i>
+          <p className="text-sm font-medium">Select a query to start editing</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div ref={container} className="relative h-full pb-24 text-base"></div>
+    <div className="h-full w-full bg-white overflow-hidden">
+      <div ref={containerRef} className="h-full w-full text-base" />
+    </div>
   );
 }
 

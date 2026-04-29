@@ -1,18 +1,61 @@
-import Dexie from "dexie";
+import Dexie, { type Table } from "dexie";
 
-export const db = new Dexie("myDatabase");
+// 1. Define the "Shape" of your data for TypeScript
+export interface DatabaseRecord {
+  id?: number;
+  name: string;
+  focused: number;
+  created: Date;
+}
 
-db.version(1).stores({
-  databases: "++id, name, focused, created",
-  files:
-    "++id, name, databaseId, focused, code, output, created, modified, favorite, status, statusMessage, errorMessage, isLoading, duration",
-  endpoints: "++id, value, label, focused"
-});
+export interface FileRecord {
+  id?: number;
+  name: string;
+  databaseId: number;
+  focused: number;
+  code: string;
+  output: string;
+  created: Date;
+  modified: Date;
+  status: string;
+  statusMessage: string;
+  errorMessage: string;
+  isLoading: boolean;
+  duration: number;
+}
+
+export interface FileListItemProps {
+  file: FileRecord;
+}
+export interface FileProps {
+  data: FileRecord;
+}
+export interface EndpointRecord {
+  id?: number;
+  value: string;
+  label: string;
+  focused: number;
+}
+
+// Use "!" to tell TS these will be assigned by Dexie
+export class MyDexie extends Dexie {
+  databases!: Table<DatabaseRecord>;
+  files!: Table<FileRecord>;
+  endpoints!: Table<EndpointRecord>;
+
+  constructor() {
+    super("myDatabase");
+
+    this.version(1).stores({
+      databases: "++id, name, focused, created",
+      files: "++id, name, databaseId, focused, code, output, created, modified, status, statusMessage, errorMessage, isLoading, duration",
+      endpoints: "++id, value, label, focused",
+    });
+  }
+}
+
+export const db = new MyDexie();
 
 db.open()
-  .then(function (db) {
-    console.log("db initialized");
-  })
-  .catch(function (err) {
-    console.log("db error", err);
-  });
+  .then(() => console.log("DB initialized"))
+  .catch((err) => console.error("DB error", err));

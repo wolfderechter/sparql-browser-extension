@@ -1,5 +1,9 @@
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-balham.css";
+// import "ag-grid-community/styles/ag-grid.css";
+// import "ag-grid-community/styles/ag-theme-balham.css";
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "@/assets/tailwind.css";
 
 import Editor from "@/components/Editor";
 import Output from "@/components/Output";
@@ -7,7 +11,7 @@ import SideBar from "@/components/Sidebar";
 import Toolbar from "@/components/Toolbar";
 import Split from "react-split";
 
-export default function index() {
+const EditorApp = () => {
   return (
     <div>
       <div className="max-w-screen h-screen max-h-screen w-screen overflow-hidden bg-white">
@@ -35,4 +39,12 @@ export default function index() {
       </div>
     </div>
   );
-}
+};
+
+ModuleRegistry.registerModules([ AllCommunityModule ]);
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <EditorApp />
+  </React.StrictMode>
+);

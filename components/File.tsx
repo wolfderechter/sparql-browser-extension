@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { db } from "~data/db";
-import { useHover } from "~hooks/useHover";
-import { useDrag } from "react-dnd";
+import { RefObject, useState } from "react";
+import { db, FileProps } from "@/data/db";
+import { useHover } from 'usehooks-ts'
 
-function File({ data }) {
-  const [hoverRef, isHovered] = useHover();
+function File({ data }: FileProps) {
+  const hoverRef = useRef<HTMLDivElement>(null);
+  const isHovered = useHover(hoverRef as RefObject<HTMLElement>);
+  // const [hoverRef, isHovered] = useHover();
   const [editMode, setEditMode] = useState(false);
   const [localName, setlocalName] = useState(data.name);
 
-  function setSelected(fileId) {
+  function setSelected(fileId: number | undefined) {
+    if (fileId === undefined) return;
+
     db.files.where("focused").equals(1).modify({ focused: 0 });
     db.files.update(fileId, {
       focused: 1

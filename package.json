@@ -16,10 +16,19 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.3",
+    "ag-grid-community": "^35.2.1",
+    "ag-grid-react": "^35.2.1",
+    "dexie-export-import": "^4.4.0",
+    "dexie-react-hooks": "^4.4.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-select": "^5.10.2",
     "react-split": "^2.0.14",
-    "tailwindcss": "^4.2.3"
+    "remixicon": "^4.9.1",
+    "sparql-editor": "^0.7.1",
+    "tailwindcss": "^4.2.3",
+    "use-debounce": "^10.1.1",
+    "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",

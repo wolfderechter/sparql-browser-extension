@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "~data/db";
+import { db } from "@/data/db";
 import { AgGridReact } from "ag-grid-react";
 import Spinner from "./ui/Spinner";
-import { parseForGrid } from "~utils/parse-for-grid";
+import { parseForGrid } from "@/utils/parse-for-grid";
 
 function Output() {
   const file = useLiveQuery(() => db.files.where({ focused: 1 }).first());
@@ -20,7 +20,7 @@ function Output() {
   );
 }
 
-function OutputToolbar({ file }) {
+function OutputToolbar({ file }: any) {
   const statusColor = () => {
     if (file?.status == 200)
       return "bg-green-700 text-white font-medium border-green-900";
@@ -47,7 +47,7 @@ function OutputToolbar({ file }) {
   );
 }
 
-function OutputZone({ file }) {
+function OutputZone({ file }: any) {
   if (file.isLoading) return null;
 
   if (file.errorMessage) {
@@ -71,7 +71,7 @@ function OutputZone({ file }) {
         rowData={rows}
         columnDefs={columns}
         enableCellTextSelection={true}
-        onGridReady={(e) => e.columnApi.autoSizeAllColumns()}></AgGridReact>
+        onGridReady={(e) => e.api.autoSizeAllColumns()}></AgGridReact>
     </div>
   );
 }
