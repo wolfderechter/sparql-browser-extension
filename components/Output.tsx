@@ -73,6 +73,7 @@ function OutputZone({ file }: any) {
   const table = useReactTable({
     data: rows,
     columns,
+    columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -81,33 +82,51 @@ function OutputZone({ file }: any) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-gray-200">
+      <div className="flex-1 overflow-auto relative">
+<table
+  className="table-fixed border-collapse text-left text-sm"
+  style={{ width: table.getTotalSize() }}
+>          <thead className="sticky top-0 z-10 bg-gray-200 shadow-sm">
             {table.getHeaderGroups().map((hg) => (
               <tr key={hg.id}>
                 {hg.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="border-b border-gray-300 px-2 py-1 font-medium cursor-pointer select-none text-left"
+                    className="group relative border-b border-gray-300 px-2 py-1 text-left font-medium select-none truncate"
                     style={{ width: header.getSize() }}
-                    onClick={header.column.getToggleSortingHandler()}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                    {{ asc: " ↑", desc: " ↓" }[header.column.getIsSorted() as string] ?? null}
+                  >
+                    {/* Sorting Click Target */}
+                    <div
+                      className={header.column.getCanSort() ? "cursor-pointer" : ""}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {{ asc: " ↑", desc: " ↓" }[header.column.getIsSorted() as string] ?? null}
+                    </div>
+
+                    {/* Resize Handle */}
+                    {header.column.getCanResize() && (
+                      <div
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        className={`absolute right-0 top-0 h-full w-1 cursor-col-resize touch-none select-none bg-gray-400 opacity-0 transition-opacity hover:bg-blue-500 group-hover:opacity-100 ${header.column.getIsResizing() ? "bg-blue-500 opacity-100" : ""
+                          }`}
+                      />
+                    )}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
-        </table>
-      </div>
-      <div className="flex-1 overflow-auto">
-        <table className="w-full text-left text-sm">
           <tbody>
             {tableRows.map((row) => (
               <tr key={row.id} className="border-b border-gray-200 hover:bg-gray-50">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-2 py-1 text-left" style={{ width: cell.column.getSize() }}>
+                  <td
+                    key={cell.id}
+                    className="px-2 py-1 text-left truncate overflow-hidden"
+                    style={{ width: cell.column.getSize() }}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -119,7 +138,6 @@ function OutputZone({ file }: any) {
     </div>
   );
 }
-
 function EmptyStateOutput() {
   return (
     <div className="h-full border-t border-gray-200 bg-gray-100">

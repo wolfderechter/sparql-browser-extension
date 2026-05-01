@@ -31,28 +31,63 @@ export function parseForGrid(data: any) {
     };
   }
 
+  const bindings = data.results?.bindings || [];
+
+  // 1. Pre-calculate the maximum text length for each column
+  const maxLengths: Record<string, number> = {};
+
+  // Initialize with the length of the headers
+  data.head.vars.forEach((variable: string) => {
+    maxLengths[variable] = variable.length;
+  });
+
+  // Scan the first 50 rows to find the longest content
+  // (Scanning 50 is fast, scanning all 500 might slow down the render slightly)
+  const sampleRows = bindings.slice(0, 50);
+  sampleRows.forEach((row: any) => {
+    data.head.vars.forEach((variable: string) => {
+      const rawValue = row[variable]?.value || "";
+      // Make sure we measure the shortened version if it exists!
+      const displayValue = findShortened(rawValue) || rawValue;
+
+      if (displayValue.length > maxLengths[variable]) {
+        maxLengths[variable] = displayValue.length;
+      }
+    });
+  });
+
+  // 2. Generate columns with dynamically calculated sizes
   const columns = [
     {
       id: "ID",
       header: "ID",
+      size: 50,
       enableResizing: false,
       cell: ({ row }: any) => row.index + 1,
     },
-    ...data.head.vars.map((variable: string) => ({
-      id: variable,
-      header: variable,
-      enableResizing: true,
-      accessorFn: (row: any) => row[variable],
-      cell: ({ getValue }: any) => {
-        const val = getValue();
-        if (!val) return null;
-        if (!val.shortened) return <div>{val.uri}</div>;
-        return <CustomCell value={val} />;
-      },
-    }))
+    ...data.head.vars.map((variable: string) => {
+      // Rough math: ~8px per character + 32px for cell padding
+      const estimatedPixels = (maxLengths[variable] * 8) + 32;
+
+      // Constrain to sensible limits (e.g., between 80px and 400px)
+      const calculatedSize = Math.min(Math.max(estimatedPixels, 80), 650);
+
+      return {
+        id: variable,
+        header: variable,
+        enableResizing: true,
+        size: calculatedSize,
+        accessorFn: (row: any) => row[variable],
+        cell: ({ getValue }: any) => {
+          const val = getValue();
+          if (!val) return null;
+          if (!val.shortened) return <div className="truncate">{val.uri}</div>;
+          return <CustomCell value={val} />;
+        },
+      };
+    })
   ];
 
-  const bindings = data.results?.bindings || [];
   const rows = bindings.slice(0, 500).map((row: any, index: number) => {
     const newRow: any = { ID: index + 1 };
 
