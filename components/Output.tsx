@@ -1,9 +1,14 @@
 import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/data/db";
-import { AgGridReact } from "ag-grid-react";
 import Spinner from "./ui/Spinner";
 import { parseForGrid } from "@/utils/parse-for-grid";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  flexRender,
+} from "@tanstack/react-table";
 
 function Output() {
   const file = useLiveQuery(() => db.files.where({ focused: 1 }).first());
@@ -65,13 +70,52 @@ function OutputZone({ file }: any) {
     [file.output]
   );
 
+  const table = useReactTable({
+    data: rows,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const { rows: tableRows } = table.getRowModel();
+
   return (
-    <div className="ag-theme-balham flex h-full flex-col">
-      <AgGridReact
-        rowData={rows}
-        columnDefs={columns}
-        enableCellTextSelection={true}
-        onGridReady={(e) => e.api.autoSizeAllColumns()}></AgGridReact>
+    <div className="flex h-full flex-col">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-200">
+            {table.getHeaderGroups().map((hg) => (
+              <tr key={hg.id}>
+                {hg.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="border-b border-gray-300 px-2 py-1 font-medium cursor-pointer select-none text-left"
+                    style={{ width: header.getSize() }}
+                    onClick={header.column.getToggleSortingHandler()}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {{ asc: " ↑", desc: " ↓" }[header.column.getIsSorted() as string] ?? null}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+        </table>
+      </div>
+      <div className="flex-1 overflow-auto">
+        <table className="w-full text-left text-sm">
+          <tbody>
+            {tableRows.map((row) => (
+              <tr key={row.id} className="border-b border-gray-200 hover:bg-gray-50">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-2 py-1 text-left" style={{ width: cell.column.getSize() }}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

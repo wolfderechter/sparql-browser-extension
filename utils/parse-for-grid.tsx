@@ -20,33 +20,46 @@ export function parseForGrid(data: any) {
   }
 
   if ("boolean" in data) {
-    return { columns: [{ field: "ASK" }], rows: [{ ASK: data.boolean }] };
+    return {
+      columns: [{
+        id: "ASK",
+        header: "ASK",
+        accessorKey: "ASK",
+        cell: ({ getValue }: any) => String(getValue()),
+      }],
+      rows: [{ ASK: data.boolean }]
+    };
   }
 
   const columns = [
     {
-      field: "ID",
-      resizable: false,
-      sortable: true,
-      pinned: "left",
-      width: "60px"
+      id: "ID",
+      header: "ID",
+      enableResizing: false,
+      cell: ({ row }: any) => row.index + 1,
     },
-    ...data.head.vars.map((variable: any) => ({
-      field: variable,
-      resizable: true,
-      sortable: true,
-      cellRenderer: CustomCell
+    ...data.head.vars.map((variable: string) => ({
+      id: variable,
+      header: variable,
+      enableResizing: true,
+      accessorFn: (row: any) => row[variable],
+      cell: ({ getValue }: any) => {
+        const val = getValue();
+        if (!val) return null;
+        if (!val.shortened) return <div>{val.uri}</div>;
+        return <CustomCell value={val} />;
+      },
     }))
   ];
 
   const bindings = data.results?.bindings || [];
   const rows = bindings.slice(0, 500).map((row: any, index: number) => {
-    const newRow = { ID: index + 1 };
+    const newRow: any = { ID: index + 1 };
 
     for (const [key, valueObj] of Object.entries(row)) {
-      const value = valueObj?.value;
+      const value = (valueObj as any)?.value;
       let shortened = null;
-      if (valueObj?.type === "uri") {
+      if ((valueObj as any)?.type === "uri") {
         shortened = findShortened(value);
       }
       newRow[key] = { uri: value, shortened };
