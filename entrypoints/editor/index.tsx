@@ -3,8 +3,7 @@
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@/assets/tailwind.css";
-
+import "@/assets/style.css";
 import Editor from "@/components/Editor";
 import Output from "@/components/Output";
 import SideBar from "@/components/Sidebar";

@@ -55,7 +55,7 @@ function File({ data }: FileProps) {
               className="ri-check-line hover:text-green-500"
               onClick={updateFileName}></i>
             <i
-              className="ri-close-line hover:text-red-500"
+              className="ri-close-line hover:text-red-500 cursor-pointer"
               onClick={() => setEditMode(false)}></i>
           </div>
         </div>
@@ -64,7 +64,7 @@ function File({ data }: FileProps) {
 
   return (
     <div ref={hoverRef}>
-      <button className="hover:black flex w-full cursor-pointer items-center justify-between space-x-1 rounded p-2 text-gray-800 hover:bg-gray-300">
+      <button className="hover:black flex w-full items-center justify-between space-x-1 rounded p-2 text-gray-800 hover:bg-gray-300">
         <div
           className="flex flex-1 items-center space-x-2"
           onClick={() => setSelected(data.id)}>

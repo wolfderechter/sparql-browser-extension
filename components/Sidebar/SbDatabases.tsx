@@ -68,7 +68,7 @@ function SbDatabases() {
           Collections
         </h2>
         <button
-          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300 cursor-pointer"
+          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300"
           onClick={() => setIsCreatingDb(true)}>
           <i className="ri-add-line text-sm"></i>
         </button>

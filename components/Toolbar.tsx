@@ -251,7 +251,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }: any, EndpointRecord:[]
                   </div>
                   <button
                     onClick={createEndpoint}
-                    className="border flex items-center rounded border-blue-600 bg-blue-600 px-2 py-1 leading-none text-white hover:bg-blue-700 cursor-pointer">
+                    className="border flex items-center rounded border-blue-600 bg-blue-600 px-2 py-1 leading-none text-white hover:bg-blue-700">
                     <i className="ri-add-line text-base"></i>
                   </button>
                 </div>

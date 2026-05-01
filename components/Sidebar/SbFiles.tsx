@@ -77,7 +77,7 @@ function SbFiles() {
           Queries
         </h2>
         <button
-          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300 cursor-pointer"
+          className="py-.5 text-md rounded px-1 text-black hover:bg-gray-300"
           onClick={() => setIsCreating(true)}>
           <i className="ri-add-line text-sm"></i>
         </button>
@@ -106,7 +106,7 @@ function SbFiles() {
 
         {isEmptyAndNotCreating() && (
           <div className="rounded px-1 py-2 text-center text-[10px] text-gray-400">
-            start constructing your first query by clicking the plus button
+            create a query to get started
           </div>
         )}
       </div>
