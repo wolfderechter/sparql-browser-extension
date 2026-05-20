@@ -55,10 +55,6 @@ function Sidebar() {
     <div className="flex h-full w-60 flex-col border-r border-gray-300 bg-gray-100 text-gray-800 shadow-inner">
       <SbDatabases />
       <SbFiles />
-
-      <div className="flex-1" />
-
-      {/* Footer Actions */}
       <div className="flex flex-col space-y-2 p-4 border-t border-gray-200 bg-gray-50">
         <div className="flex items-center justify-around">
           <a

@@ -21,8 +21,6 @@ function SbFiles() {
     setIsCreating(false);
   });
 
-  if (!database) return null;
-
   async function addFile() {
     if (!database?.id) return; // guard inside the async fn
 
@@ -69,8 +67,7 @@ function SbFiles() {
   const isEmptyAndNotCreating = () => files?.length == 0 && isCreating == false;
 
   return (
-    // TODO: fix height, auto size instead of fixed value
-    <div className="border-t border-gray-300  h-[68%]">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden border-t border-gray-300">
       <div className="flex items-center justify-between space-x-1 bg-gray-200/50 py-2 pl-2 pr-3">
         <i className="ri-bubble-chart-line text-base text-gray-500"></i>
         <h2 className="flex-1 text-xs font-medium uppercase text-gray-900">
@@ -83,31 +80,39 @@ function SbFiles() {
         </button>
       </div>
 
-      <div className='p-2 space-y-px overflow-auto h-full'>
-        {isCreating && (
-          <div
-            ref={fileInput}
-            className="flex cursor-pointer items-center space-x-1 rounded border border-gray-500 bg-white p-1 text-xs">
-            <i className="ri-file-list-2-line text-base"></i>
-            <input
-              autoFocus
-              type="text"
-              value={fileName}
-              onChange={(e) => setFileName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="w-full rounded border-none p-1 pl-0 text-xs focus:ring-0"
-              placeholder="Untitled query"
-            />
-          </div>
-        )}
-        {files?.map((file) => (
-          <FileListItem key={file.id ?? file.created.getTime()} file={file} />
-        ))}
-
-        {isEmptyAndNotCreating() && (
+      <div className='min-h-0 flex-1 overflow-auto p-2 space-y-px'>
+        {!database ? (
           <div className="rounded px-1 py-2 text-center text-[10px] text-gray-400">
-            create a query to get started
+            select a collection to see queries
           </div>
+        ) : (
+          <>
+            {isCreating && (
+              <div
+                ref={fileInput}
+                className="flex cursor-pointer items-center space-x-1 rounded border border-gray-500 bg-white p-1 text-xs">
+                <i className="ri-file-list-2-line text-base"></i>
+                <input
+                  autoFocus
+                  type="text"
+                  value={fileName}
+                  onChange={(e) => setFileName(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="w-full rounded border-none p-1 pl-0 text-xs focus:ring-0"
+                  placeholder="Untitled query"
+                />
+              </div>
+            )}
+            {files?.map((file) => (
+              <FileListItem key={file.id ?? file.created.getTime()} file={file} />
+            ))}
+
+            {isEmptyAndNotCreating() && (
+              <div className="rounded px-1 py-2 text-center text-[10px] text-gray-400">
+                create a query to get started
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

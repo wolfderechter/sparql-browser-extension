@@ -74,7 +74,7 @@ function SbDatabases() {
         </button>
       </div>
 
-      <div className='p-2 space-y-px h-[150px] overflow-auto'>
+      <div className='max-h-[150px] overflow-auto p-2 space-y-px'>
         {isCreatingDb ? (
           <div
             ref={dbInput}
