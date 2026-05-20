@@ -9,5 +9,6 @@ export default defineConfig({
   }),
   manifest: {
     permissions: ["tabs", "storage"],
+    host_permissions: ["*://*/*"],
   },
 });
