@@ -44,7 +44,7 @@ export class MyDexie extends Dexie {
   endpoints!: Table<EndpointRecord>;
 
   constructor() {
-    super("myDatabase");
+    super("sparqlBrowserExtensionDB");
 
     this.version(1).stores({
       databases: "++id, name, focused, created",
