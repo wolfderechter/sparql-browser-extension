@@ -45,7 +45,6 @@ function Toolbar() {
 
       const end = performance.now();
       const duration = formatDuration(end - start);
-      console.log(duration);
 
       if (!res.ok) {
         const errorMessage = await res.text();
@@ -111,7 +110,8 @@ function Toolbar() {
             <div className="w-.5 mx-8 h-8 border border-gray-200"></div>
             <button
               onClick={query}
-              className="flex items-center space-x-2 rounded border border-green-900 bg-green-700 px-2 py-1.5 pr-6 text-sm text-white hover:bg-green-800">
+              disabled={file?.isLoading}
+              className="flex items-center space-x-2 rounded border border-green-900 bg-green-700 px-2 py-1.5 pr-6 text-sm text-white hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed">
               <i className="ri-play-line text-lg leading-none"></i>
               <div className="font-medium">Run</div>
             </button>
@@ -128,7 +128,10 @@ function Toolbar() {
   );
 }
 
-function EndpointModal({ setEditingEndpoint, endpoints }: any, EndpointRecord:[]) {
+function EndpointModal({ setEditingEndpoint, endpoints }: {
+  setEditingEndpoint: (v: boolean) => void;
+  endpoints: EndpointRecord[] | undefined;
+}) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
 

@@ -19,10 +19,10 @@ function SbDatabases() {
   async function addDatabase() {
     const now = new Date();
 
-    db.databases.where("focused").equals(1).modify({ focused: 0 });
-    db.files.where("focused").equals(1).modify({ focused: 0 });
+    await db.databases.where("focused").equals(1).modify({ focused: 0 });
+    await db.files.where("focused").equals(1).modify({ focused: 0 });
 
-    db.databases.add({
+    await db.databases.add({
       name: dbName,
       focused: 1,
       created: now
@@ -104,10 +104,10 @@ function SbDatabases() {
             <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
               {db.name}
             </div>
-            <button className="flex h-5 w-5 items-center justify-center rounded-full text-gray-700 hover:bg-red-100 hover:text-red-500">
-              <i
-                className="ri-close-line"
-                onClick={() => setSelectedDb(db)}></i>
+            <button
+              className="flex h-5 w-5 items-center justify-center rounded-full text-gray-700 hover:bg-red-100 hover:text-red-500"
+              onClick={(e) => { e.stopPropagation(); setSelectedDb(db); }}>
+              <i className="ri-close-line"></i>
             </button>
           </div>
         ))}

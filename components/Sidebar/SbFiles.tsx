@@ -33,8 +33,8 @@ function SbFiles() {
 
     const name = fileName?.length ? fileName : `untitled query - ${humanDate}`;
 
-    db.files.where("focused").equals(1).modify({ focused: 0 });
-    db.files.add({
+    await db.files.where("focused").equals(1).modify({ focused: 0 });
+    await db.files.add({
       name: name,
       code: `SELECT * WHERE {
   ?s ?p ?o
@@ -174,7 +174,7 @@ function FileListItem({ file }: FileListItemProps) {
       {isEditing ? (
         <div
           ref={fileInput}
-          onClick={() => setFile(file.id)}
+          onClick={() => { if (!file.focused) setFile(file.id); }}
           onDoubleClick={() => setIsEditing(true)}
           className={`flex cursor-pointer items-center space-x-1 rounded border border-transparent p-1 text-xs ${file.focused && "border border-gray-600 bg-white text-black ring-2 ring-blue-600 ring-offset-2 hover:border-black"}`}>
           <i
@@ -191,7 +191,7 @@ function FileListItem({ file }: FileListItemProps) {
         </div>
       ) : (
         <div
-          onClick={() => setFile(file.id)}
+          onClick={() => { if (!file.focused) setFile(file.id); }}
           onDoubleClick={() => setIsEditing(true)}
           className={`flex cursor-pointer items-center space-x-1 rounded border border-transparent p-1 text-xs hover:bg-gray-200 hover:text-gray-800 ${file.focused && "border-gray-600 bg-white text-black hover:border-black hover:bg-white"}`}>
           <i

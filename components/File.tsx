@@ -18,11 +18,8 @@ function File({ data }: FileProps) {
     });
   }
 
-  function handleDoubleClick() {
-    console.log("double");
-  }
-
   function deleteFile() {
+    if (data.id === undefined) return;
     db.files.delete(data.id);
   }
 
@@ -69,7 +66,7 @@ function File({ data }: FileProps) {
           className="flex flex-1 items-center space-x-2"
           onClick={() => setSelected(data.id)}>
           <i className="ri-file-2-line text-blue-500"></i>
-          <span onDoubleClick={handleDoubleClick}>{data.name}</span>
+          <span>{data.name}</span>
         </div>
         {isHovered ? (
           <div className="flex items-center space-x-1.5 px-1 text-sm text-gray-600">
