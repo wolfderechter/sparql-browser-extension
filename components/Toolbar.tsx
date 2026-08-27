@@ -18,6 +18,8 @@ function Toolbar() {
   );
 
   async function query() {
+    if (!file) return;
+
     const endpoint = selectedEndpoint
       ? selectedEndpoint.value
       : "https://dbpedia.org/sparql";
@@ -32,8 +34,6 @@ function Toolbar() {
     });
 
     try {
-      if (!file) return;
-
       const start = performance.now();
       const res = await fetch(endpoint, {
         method: "POST",
@@ -79,10 +79,10 @@ function Toolbar() {
     }
   }
 
-  function setEndpoint(endpoint: SingleValue<EndpointRecord>) {
+  async function setEndpoint(endpoint: SingleValue<EndpointRecord>) {
     if (!endpoint) return;
-    db.endpoints.where("focused").equals(1).modify({ focused: 0 });
-    db.endpoints.update(endpoint.id, { focused: 1 });
+    await db.endpoints.where("focused").equals(1).modify({ focused: 0 });
+    await db.endpoints.update(endpoint.id, { focused: 1 });
   }
 
   if (!file) return null;
@@ -230,7 +230,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }: {
                 <div className="flex items-center space-x-2">
                   <div className="relative w-1/5">
                     <input
-                      id="small_outlined"
+                      id="endpoint_label"
                       type="text"
                       className="border peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
                       placeholder=" "
@@ -238,14 +238,14 @@ function EndpointModal({ setEditingEndpoint, endpoints }: {
                       onChange={(e) => setLabel(e.target.value)}
                     />
                     <label
-                      htmlFor="small_outlined"
+                      htmlFor="endpoint_label"
                       className="absolute left-1 top-1 z-10 origin-[0] -translate-y-3 scale-75 transform bg-white px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600">
                       Label
                     </label>
                   </div>
                   <div className="relative flex-1">
                     <input
-                      id="small_outlined"
+                      id="endpoint_value"
                       type="text"
                       className="border peer block w-full appearance-none rounded border-gray-300 bg-white px-2.5 pb-1.5 pt-3 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0"
                       placeholder=" "
@@ -253,7 +253,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }: {
                       onChange={(e) => setValue(e.target.value)}
                     />
                     <label
-                      htmlFor="small_outlined"
+                      htmlFor="endpoint_value"
                       className="absolute left-1 top-1 z-10 origin-left -translate-y-3 scale-75 transform bg-white px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-1 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600">
                       Value
                     </label>

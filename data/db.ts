@@ -8,13 +8,21 @@ export interface DatabaseRecord {
   created: Date;
 }
 
+export interface SparqlOutput {
+  boolean?: boolean;
+  head?: { vars: string[] };
+  results?: {
+    bindings: Array<Record<string, { value: string; type: string }>>;
+  };
+}
+
 export interface FileRecord {
   id?: number;
   name: string;
   databaseId: number;
   focused: number;
   code: string;
-  output: string;
+  output: SparqlOutput | null;
   created: Date;
   modified: Date;
   status: string;

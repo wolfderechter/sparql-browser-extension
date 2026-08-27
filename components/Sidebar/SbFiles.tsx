@@ -43,7 +43,7 @@ function SbFiles() {
       created: now,
       databaseId: database.id,
       modified: now,
-      output: "",
+      output: null,
       status: "",
       statusMessage: "",
       errorMessage: "",

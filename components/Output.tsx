@@ -1,26 +1,9 @@
 import { useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "@/data/db";
+import { db, type FileRecord } from "@/data/db";
 import Spinner from "./ui/Spinner";
-import { parseForGrid } from "@/utils/parse-for-grid";
-import {
-  tableFeatures,
-  useTable,
-  createSortedRowModel,
-  rowSortingFeature,
-  columnSizingFeature,
-  columnResizingFeature,
-  sortFns,
-  flexRender,
-} from "@tanstack/react-table";
-
-const features = tableFeatures({
-  rowSortingFeature,
-  sortedRowModel: createSortedRowModel(),
-  columnSizingFeature,
-  columnResizingFeature,
-  sortFns,
-});
+import { features, parseForGrid } from "@/utils/parse-for-grid";
+import { useTable, flexRender } from "@tanstack/react-table";
 
 function Output() {
   const file = useLiveQuery(() => db.files.where({ focused: 1 }).first());
@@ -42,9 +25,9 @@ function formatQueriedAt(date: Date) {
   return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} - ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-function OutputToolbar({ file }: any) {
+function OutputToolbar({ file }: { file: FileRecord }) {
   const statusColor = () => {
-    if (file?.status == 200)
+    if (file?.status === "200")
       return "bg-green-700 text-white font-medium border-green-900";
     return "bg-red-700 border-red-900";
   };
@@ -75,7 +58,7 @@ function OutputToolbar({ file }: any) {
   );
 }
 
-function OutputZone({ file }: any) {
+function OutputZone({ file }: { file: FileRecord }) {
   const { columns, rows } = useMemo(
     () => parseForGrid(file.output),
     [file.output]
