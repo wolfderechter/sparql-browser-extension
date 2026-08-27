@@ -58,7 +58,7 @@ function Editor() {
   }
 
   return (
-    <div className="h-full w-full bg-white overflow-hidden">
+    <div className="h-full w-full bg-white overflow-auto">
       <div ref={containerRef} className="h-full w-full text-base" />
     </div>
   );

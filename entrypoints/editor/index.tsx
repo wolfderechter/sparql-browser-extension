@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/assets/style.css";
+import "react-split-pane/styles.css";
 import Editor from "@/components/Editor";
 import Output from "@/components/Output";
 import SideBar from "@/components/Sidebar";
 import Toolbar from "@/components/Toolbar";
-import Split from "react-split";
+import { SplitPane, Pane } from "react-split-pane";
 
 const EditorApp = () => {
   return (
@@ -14,22 +15,21 @@ const EditorApp = () => {
         <div className="flex h-full w-full">
           <SideBar />
           <div className="relative flex h-full flex-1 flex-col overflow-hidden">
-            <Split
-              className="split h-full"
-              direction="vertical"
-              minSize={0}
-              snapOffset={10}
-              gutterSize={5}
-              gutterAlign="start"
-              dragInterval={1}>
-              <div>
-                <Toolbar />
-                <Editor />
-              </div>
-              <div className="relative z-40">
+            <SplitPane
+              className="h-full"
+              direction="vertical">
+              <Pane className="overflow-hidden" defaultSize="50%" minSize={80}>
+                <div className="flex h-full flex-col">
+                  <Toolbar />
+                  <div className="flex-1 min-h-0">
+                    <Editor />
+                  </div>
+                </div>
+              </Pane>
+              <Pane className="overflow-hidden" minSize={80}>
                 <Output />
-              </div>
-            </Split>
+              </Pane>
+            </SplitPane>
           </div>
         </div>
       </div>

@@ -16,9 +16,9 @@ function Output() {
   if (!file) return <EmptyStateOutput />;
 
   return (
-    <div className="h-full border-t border-gray-200 bg-gray-100 pb-12">
+    <div className="flex h-full flex-col border-t border-gray-200 bg-gray-100">
       <OutputToolbar file={file} />
-      <div className="relative h-full">
+      <div className="relative flex-1 min-h-0">
         <OutputZone file={file} />
       </div>
     </div>
