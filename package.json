@@ -1,62 +1,40 @@
 {
   "name": "sparql-browser-extension",
-  "displayName": "Sparql browser extension",
+  "description": "manifest.json description",
+  "private": true,
   "version": "0.0.0",
-  "description": "A basic Plasmo extension.",
-  "author": "achraf",
+  "type": "module",
   "scripts": {
-    "dev": "plasmo dev --verbose",
-    "build": "npm-run-all clean build:* ",
-    "package": "plasmo package",
-    "clean": "rimraf build",
-    "build:ch": "plasmo build --target=chrome-mv3 --zip",
-    "build:edge": "plasmo build --target=edge-mv3 --zip",
-    "build:brave": "plasmo build --target=brave-mv3 --zip",
-    "build:opera": "plasmo build --target=opera-mv3 --zip",
-    "build:ff": "plasmo build --target=firefox-mv2 --zip --minify",
-    "analyze": "plasmo build --source-maps --bundle-buddy",
-    "format:class": "prettier src/**/*.tsx --write"
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare"
   },
   "dependencies": {
-    "@tailwindcss/forms": "^0.5.7",
-    "ag-grid-community": "^29.3.5",
-    "ag-grid-react": "^29.3.5",
-    "dexie": "^3.2.4",
-    "dexie-export-import": "^4.1.4",
-    "dexie-react-hooks": "^1.1.7",
-    "plasmo": "0.84.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-split": "^2.0.14",
-    "remixicon": "^4.1.0",
-    "sparql-editor": "0.5.0",
-    "tailwindcss": "3.2.4",
-    "use-debounce": "^9.0.4"
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-table": "^9.2.3",
+    "dexie-export-import": "^4.4.0",
+    "dexie-react-hooks": "^4.4.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-select": "^5.10.2",
+    "react-split-pane": "^3.2.0",
+    "remixicon": "^4.9.1",
+    "sparql-editor": "^0.7.1",
+    "tailwindcss": "^4.3.3",
+    "use-debounce": "^10.1.1",
+    "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
-    "@types/chrome": "0.0.208",
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.10",
-    "npm-run-all": "^4.1.5",
-    "postcss": "8.4.21",
-    "prettier": "3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.7",
-    "react-select": "^5.8.0",
-    "rimraf": "^5.0.5",
-    "typescript": "4.9.4"
-  },
-  "manifest": {
-    "host_permissions": [
-      "http://localhost/*"
-    ],
-    "permissions": [
-      "activeTab"
-    ],
-    "browser_specific_settings": {
-      "gecko": {
-        "id": "sparql-browser-extension@addon.com"
-      }
-    }
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.0",
+    "@wxt-dev/module-react": "^1.1.5",
+    "typescript": "^7.0.2",
+    "wxt": "^0.20.27"
   }
 }
