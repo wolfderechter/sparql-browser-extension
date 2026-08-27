@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function CustomCell({ value }) {
+function CustomCell({ value }: { value: { uri: string; shortened: string | null } }) {
   const [isToggled, setToggle] = useState(!!value?.shortened);
 
   if (!value) {

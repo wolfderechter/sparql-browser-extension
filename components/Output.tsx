@@ -4,11 +4,23 @@ import { db } from "@/data/db";
 import Spinner from "./ui/Spinner";
 import { parseForGrid } from "@/utils/parse-for-grid";
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
+  tableFeatures,
+  useTable,
+  createSortedRowModel,
+  rowSortingFeature,
+  columnSizingFeature,
+  columnResizingFeature,
+  sortFns,
   flexRender,
 } from "@tanstack/react-table";
+
+const features = tableFeatures({
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+  columnSizingFeature,
+  columnResizingFeature,
+  sortFns,
+});
 
 function Output() {
   const file = useLiveQuery(() => db.files.where({ focused: 1 }).first());
@@ -53,6 +65,18 @@ function OutputToolbar({ file }: any) {
 }
 
 function OutputZone({ file }: any) {
+  const { columns, rows } = useMemo(
+    () => parseForGrid(file.output),
+    [file.output]
+  );
+
+  const table = useTable({
+    columns,
+    data: rows,
+    features,
+    columnResizeMode: "onChange",
+  });
+
   if (file.isLoading) return null;
 
   if (file.errorMessage) {
@@ -65,28 +89,16 @@ function OutputZone({ file }: any) {
     );
   }
 
-  const { columns, rows } = useMemo(
-    () => parseForGrid(file.output),
-    [file.output]
-  );
-
-  const table = useReactTable({
-    data: rows,
-    columns,
-    columnResizeMode: "onChange",
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-  });
-
   const { rows: tableRows } = table.getRowModel();
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 overflow-auto relative">
-<table
-  className="table-fixed border-collapse text-left text-sm"
-  style={{ width: table.getTotalSize() }}
->          <thead className="sticky top-0 z-10 bg-gray-200 shadow-sm">
+        <table
+          className="table-fixed border-collapse text-left text-sm"
+          style={{ width: table.getTotalSize() }}
+        >
+          <thead className="sticky top-0 z-10 bg-gray-200 shadow-sm">
             {table.getHeaderGroups().map((hg) => (
               <tr key={hg.id}>
                 {hg.headers.map((header) => (
@@ -121,7 +133,7 @@ function OutputZone({ file }: any) {
           <tbody>
             {tableRows.map((row) => (
               <tr key={row.id} className="border-b border-gray-200 hover:bg-gray-50">
-                {row.getVisibleCells().map((cell) => (
+                {row.getAllCells().map((cell) => (
                   <td
                     key={cell.id}
                     className="px-2 py-1 text-left truncate overflow-hidden"

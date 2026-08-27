@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { db, EndpointRecord } from "@/data/db";
 import { useLiveQuery } from "dexie-react-hooks";
-import Select from "react-select";
+import Select, { type SingleValue } from "react-select";
 import { formatDuration } from "@/utils/formatDuration";
 
 function Toolbar() {
@@ -75,7 +75,8 @@ function Toolbar() {
     }
   }
 
-  function setEndpoint(endpoint: EndpointRecord) {
+  function setEndpoint(endpoint: SingleValue<EndpointRecord>) {
+    if (!endpoint) return;
     db.endpoints.where("focused").equals(1).modify({ focused: 0 });
     db.endpoints.update(endpoint.id, { focused: 1 });
   }
@@ -147,7 +148,8 @@ function EndpointModal({ setEditingEndpoint, endpoints }: {
     setValue("");
   }
 
-  function deleteEndpoint(id) {
+  function deleteEndpoint(id: number | undefined) {
+    if (id === undefined) return;
     db.endpoints.where({ id }).delete();
   }
 
@@ -202,7 +204,7 @@ function EndpointModal({ setEditingEndpoint, endpoints }: {
                         </span>
                       </td>
                     </tr>
-                    {endpoints.map((endpoint: EndpointRecord, index: number) => (
+                    {endpoints?.map((endpoint: EndpointRecord, index: number) => (
                       <tr key={index} className="text-gray-700">
                         <td className="whitespace-nowrap px-4 py-2">
                           {endpoint.label}

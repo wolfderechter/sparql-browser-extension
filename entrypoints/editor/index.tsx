@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot, type Root } from "react-dom/client";
 import "@/assets/style.css";
 import "react-split-pane/styles.css";
 import Editor from "@/components/Editor";
@@ -37,7 +37,11 @@ const EditorApp = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const container = document.getElementById("root") as HTMLDivElement & {
+  _root?: Root;
+};
+const root = container._root ?? (container._root = createRoot(container));
+root.render(
   <React.StrictMode>
     <EditorApp />
   </React.StrictMode>
