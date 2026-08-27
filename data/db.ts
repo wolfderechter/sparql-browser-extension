@@ -22,6 +22,7 @@ export interface FileRecord {
   errorMessage: string;
   isLoading: boolean;
   duration: string;
+  queriedAt: Date | null;
 }
 
 export interface FileListItemProps {

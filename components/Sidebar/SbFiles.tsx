@@ -48,7 +48,8 @@ function SbFiles() {
       statusMessage: "",
       errorMessage: "",
       isLoading: false,
-      duration: ""
+      duration: "",
+      queriedAt: null
     });
   }
 

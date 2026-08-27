@@ -37,6 +37,11 @@ function Output() {
   );
 }
 
+function formatQueriedAt(date: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} - ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 function OutputToolbar({ file }: any) {
   const statusColor = () => {
     if (file?.status == 200)
@@ -58,6 +63,12 @@ function OutputToolbar({ file }: any) {
       {file.duration && (
         <div className="rounded border border-gray-400 bg-white px-2 py-1 text-[11px] font-medium text-gray-700">
           {file.duration}
+        </div>
+      )}
+
+      {file.queriedAt && (
+        <div className="rounded border border-gray-400 bg-white px-2 py-1 text-[11px] font-medium text-gray-700">
+          {formatQueriedAt(new Date(file.queriedAt))}
         </div>
       )}
     </div>

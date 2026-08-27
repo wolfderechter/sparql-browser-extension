@@ -27,7 +27,8 @@ function Toolbar() {
       status: "",
       statusMessage: "",
       errorMessage: "",
-      duration: ""
+      duration: "",
+      queriedAt: null
     });
 
     try {
@@ -53,7 +54,8 @@ function Toolbar() {
           statusMessage: res.statusText,
           errorMessage: errorMessage,
           isLoading: false,
-          duration: duration
+          duration: duration,
+          queriedAt: new Date()
         });
         return;
       }
@@ -64,13 +66,15 @@ function Toolbar() {
         statusMessage: res.statusText,
         output: output,
         isLoading: false,
-        duration: duration
+        duration: duration,
+        queriedAt: new Date()
       });
     } catch (err: any) {
       await db.files.update(file, {
         errorMessage: err.stack,
         statusMessage: err.message,
-        isLoading: false
+        isLoading: false,
+        queriedAt: new Date()
       });
     }
   }
