@@ -1,83 +1,32 @@
+# SPARQL Browser Extension
 
+A browser extension for running and storing SPARQL queries in multiple collections, against remote endpoints.
 
-![screenshot](https://github.com/aatauil/sparql-browser-extension/assets/52280338/0ff096d9-f9e4-48cc-a6a4-e13f5a30e14e)
+## Stack
 
-<h4 align="center">Feature rich sparql editor as a browser extension</h4>
+- WXT
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Dexie (IndexedDB)
+- TanStack Table v9
 
-<p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#development">Development</a> •
-  <a href="#in-depth">In Depth</a> •
-  <a href="#license">License</a>
-</p>
-
-
-## Key Features
-
-* Databases - Keep a list of all your databases
-* Query lists - Save your queries in list
-* Favorites list - keep your favorite queries across databases by hand
-* Sparql editor based on Codemirror 6
-* View sparql results in a clear grid table
-* View created_at and modified_at for queries
-
-## How To Use
-
-This repo cnntains the pre-build extension in the build folder. So you just need to clone it and point chrome to the right folder.
-
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+## Getting Started
 
 ```bash
-# Clone this repository
-$ git clone https://github.com/aatauil/sparql-browser-extension.git
+bun install
+bun run dev
 ```
 
-### Chrome (not tested on other browsers yet)
+This starts a dev server and opens the browser with the extension loaded.
 
-Open your browser and go to `chrome://extensions`
+## Scripts
 
-Enable the developer mode in the top right en click on the appearing `Load unpacked` button (top left). Navigate to the extensions `build/chrome-mv3-prod` directory and press save.
-
-To see the extension, click on the puzzle piece icon on the Chrome toolbar, and click on the sparql-browser-extension extension. 
-
-Pro tip: Pin your extension to the Chrome toolbar for easy access by clicking the pin button.
-
-
-## Development
-
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-$ git clone https://github.com/aatauil/sparql-browser-extension.git
-
-# Go into the repository
-$ cd sparql-browser-extension
-
-# Install dependencies
-$ pnpm install
-
-# Build extension
-$ pnpm run dev
-```
-
-When the extension finished building, open your browser and go to `chrome://extensions`
-
-Enable the developer mode in the top right en click on the appearing `Load unpacked` button. Navigate to the extensions `build/chrome-mv3-dev` directory and press save.
-
-To see the extension, click on the puzzle piece icon on the Chrome toolbar, and click on the extension icon. 
-
-## In Depth
-### Stack
-This extension is build on react, specifically on the [plasmo framework](https://www.plasmo.com/) that makes extension development and publishes less painfull. Still painfull though. 
-
-### Editor 
-For the editor we use the [sparql-editor](https://github.com/aatauil/sparql-editor/tree/master/src) Any editor related issues just preferably be opened there.
-
-### Grid
-For the data grid we use [ag-grid](https://www.ag-grid.com/) so if you see any community features that you want to see included you can open an issue or PR for it
-
-## License
-
-MIT
+| Command                  | Description                       |
+| ------------------------ | --------------------------------- |
+| `bun run dev`            | Dev server (Chrome)               |
+| `bun run dev:firefox`    | Dev server (Firefox)              |
+| `bun run build`          | Production build (Chrome)         |
+| `bun run build:firefox`  | Production build (Firefox)        |
+| `bun run zip`            | Zip for store publishing          |
+| `bun run compile`        | Typecheck (`tsc --noEmit`)        |
