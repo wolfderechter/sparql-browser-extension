@@ -1,6 +1,6 @@
-import { RefObject, useRef, useState } from "react";
+import { type RefObject, useRef, useState } from "react";
 import { useOnClickOutside } from 'usehooks-ts'
-import { DatabaseRecord, db } from "@/data/db";
+import { type DatabaseRecord, db } from "@/data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
 function SbDatabases() {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { db, EndpointRecord } from "@/data/db";
+import { db, type EndpointRecord } from "@/data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import Select, { type SingleValue } from "react-select";
 import { formatDuration } from "@/utils/formatDuration";

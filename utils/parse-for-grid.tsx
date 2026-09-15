@@ -95,7 +95,7 @@ export function parseForGrid(data: SparqlOutput | null): {
       // Make sure we measure the shortened version if it exists!
       const displayValue = findShortened(rawValue) || rawValue;
 
-      if (displayValue.length > maxLengths[variable]) {
+      if (displayValue.length > (maxLengths[variable] ?? 0)) {
         maxLengths[variable] = displayValue.length;
       }
     });
@@ -112,7 +112,7 @@ export function parseForGrid(data: SparqlOutput | null): {
     }),
     ...vars.map((variable: string) => {
       // Rough math: ~8px per character + 32px for cell padding
-      const estimatedPixels = maxLengths[variable] * 8 + 32;
+      const estimatedPixels = (maxLengths[variable] ?? 0) * 8 + 32;
 
       // Constrain to sensible limits (e.g., between 80px and 650px)
       const calculatedSize = Math.min(Math.max(estimatedPixels, 80), 650);

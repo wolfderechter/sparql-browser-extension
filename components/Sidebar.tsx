@@ -2,8 +2,7 @@ import React, { useRef } from "react";
 import SbFiles from "./Sidebar/SbFiles";
 import SbDatabases from "./Sidebar/SbDatabases";
 import { db } from "@/data/db";
-import { importDB, exportDB } from "dexie-export-import";
-import { StaticImportOptions } from "dexie-export-import/dist/import";
+import { importInto, exportDB } from "dexie-export-import";
 
 function Sidebar() {
   // 1. Use a Ref for the file input instead of getElementById
@@ -20,10 +19,10 @@ function Sidebar() {
     try {
       console.log('🔄 Importing database...');
       // Dexie-export-import clears tables if specified
-      await importDB(file, {
+      await importInto(db, file, {
         clearTablesBeforeImport: true,
         overwriteValues: true
-      } as StaticImportOptions);
+      });
 
       window.location.reload();
     } catch (err) {

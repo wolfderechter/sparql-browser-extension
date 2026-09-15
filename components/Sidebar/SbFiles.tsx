@@ -1,6 +1,6 @@
-import { RefObject, useRef, useState } from "react";
+import { type RefObject, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { FileListItemProps, db } from "@/data/db";
+import { type FileListItemProps, db } from "@/data/db";
 import { useOnClickOutside } from 'usehooks-ts'
 
 function SbFiles() {

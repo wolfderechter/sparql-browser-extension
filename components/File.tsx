@@ -1,5 +1,5 @@
-import { RefObject, useState } from "react";
-import { db, FileProps } from "@/data/db";
+import { type RefObject, useState } from "react";
+import { db, type FileProps } from "@/data/db";
 import { useHover } from 'usehooks-ts'
 
 function File({ data }: FileProps) {
